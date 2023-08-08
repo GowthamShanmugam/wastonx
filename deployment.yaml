@@ -1,0 +1,59 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: watsonx
+spec: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: watsonx-deployment
+  namespace: watsonx
+  labels:
+    app: watsonx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: watsonx
+  template:
+    metadata:
+      labels:
+        app: watsonx
+    spec:
+      containers:
+      - name: watsonx-handshake
+        image: quay.io/gshanmug/watsonx:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: watsonx-service
+  namespace: watsonx
+spec:
+  selector:
+    app: watsonx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3333
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: watsonx
+  namespace: watsonx
+spec:
+  to:
+    kind: Service
+    name: watsonx-service
+    weight: 100
+  port:
+    targetPort: 3333
+  wildcardPolicy: None
+---
+
+

@@ -1,0 +1,5 @@
+1. podman build -t quay.io/gshanmug/watsonx .
+2. podman push quay.io/gshanmug/watsonx
+
+
+To test in local: podman run -p 3333:3333 quay.io/gshanmug/watsonx
